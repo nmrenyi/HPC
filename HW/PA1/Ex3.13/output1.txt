@@ -1,0 +1,9 @@
+What's the order of the vectors?
+Enter the vector x
+x is
+340.000000 871.000000 569.000000 
+Enter the vector y
+y is
+833.000000 117.000000 753.000000 
+The sum is
+1173.000000 988.000000 1322.000000 
