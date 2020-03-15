@@ -3,17 +3,18 @@
 import random
 import sys
 
-def dataMaker(n, valuelength):
+def dataMaker(length_range, data_range):
 	f = sys.stdout
-	f.write(str(n) + "\n")
-	for datanum in range(n):
-		S1 = str(random.randint(1, 9))
-		S2 = str(random.randint(1, 9))
-		for itr in range(valuelength - 1):
-			S1 += str(random.randint(0, 9))
-			S2 += str(random.randint(0, 9))
-		f.write(S1 + " " + S2 + "\n")
+	order = random.randint(1, length_range)
+	f.write(str(order) + "\n")
+	v1 = ''
+	v2 = ''
+	for i in range(order):
+		v1 += str(random.random() * data_range) + ' '
+		v2 += str(random.random() * data_range) + ' '
+	f.write(v1 + '\n')
+	f.write(v2 + '\n')
 
 
-# 每组数据10个，长度为10
-dataMaker(3, 3)
+
+dataMaker(200000, 100)

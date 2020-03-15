@@ -13,6 +13,8 @@ def checkAns(outputFile1, outputFile2):
 		output1 = f.readlines()
 	with open(outputFile2, "r") as f:
 		output2 = f.readlines()
+
+
 	return "".join(output1) == "".join(output2)
 
 if len(sys.argv) - 1 != 3:
@@ -28,6 +30,9 @@ while True:
 	if 0 != os.system("%s > input.txt" % sys.argv[3]):
 		sys.stdout.write("Run datamaker failed\n")
 		break
+	# print sys.argv[1]
+	# print sys.argv[2]
+
 	if 0 != os.system("%s < input.txt > output1.txt" % sys.argv[1]):
 		sys.stdout.write("Run program1 failed\n")
 		break
