@@ -47,7 +47,7 @@ int main(void) {
    double *local_x, *local_y, *local_z;
 
    MPI_Comm comm;
-
+   
    MPI_Init(NULL, NULL);
    comm = MPI_COMM_WORLD;
    MPI_Comm_size(comm, &comm_sz);

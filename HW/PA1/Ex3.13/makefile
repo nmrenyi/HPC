@@ -16,7 +16,7 @@ $(SERIAL_TARGET): $(SERIAL_SRC)
 run_parallel: $(PARRALLEL_TARGET)
 	$(EXEC) -n 4 $(PARRALLEL_TARGET)
 run_serial: $(SERIAL_TARGET)
-	./SERIAL_TARGET
+	./$(SERIAL_TARGET)
 
 check: $(PARRALLEL_TARGET) $(SERIAL_TARGET)
 	python check.py ./$(SERIAL_TARGET) "$(EXEC) -n 4 $(PARRALLEL_TARGET)" "python datamaker.py"

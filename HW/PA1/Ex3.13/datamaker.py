@@ -17,4 +17,4 @@ def dataMaker(length_range, data_range):
 
 
 
-dataMaker(200000, 100)
+dataMaker(200, 100)

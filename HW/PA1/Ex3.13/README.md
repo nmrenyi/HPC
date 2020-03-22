@@ -6,3 +6,5 @@
 3. make more clear about the makefile, such as parametre passing, different environment(cluster and pc), naming rules, etc.
 
 4. what is sending sig_INT to mirun in output.txt2 (duipai parallel output?)
+
+
