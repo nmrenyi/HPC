@@ -11,9 +11,7 @@ void ErrorMessage() {
 }
 
 void Get_args(int argc, char** argv, int* local_arr, int my_rank, int comm_sz, MPI_Comm comm) {
-    
     int randomGenerate = 0;
-
     int error = 0;
     if (my_rank == 0) {
         if (argc != 2) {
@@ -30,7 +28,7 @@ void Get_args(int argc, char** argv, int* local_arr, int my_rank, int comm_sz, M
             }
         }
     }
-    
+
     MPI_Bcast(&error, 1, MPI_INT, 0, comm);
     if (error) {
         MPI_Finalize();

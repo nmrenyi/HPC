@@ -123,11 +123,6 @@
 %----------------------------------------------------------------------------------------
 
 \section{Ex3.1.13}
-\subsection{题面}
-MPI\_Scatter and MPI\_Gather have the limitation that each process must send or receive the same number of data items. When this is not the case, we must use the MPI functions MPI\_Gatherv and MPI\_Scatterv. Look at the man pages for these functions, and modify your vector sum program so that it can correctly handle the case when n isn’t evenly divisible by comm\_sz.\\
-
-
-修改课本附带的ch3/mpi\_vector\_add.c程序，利用MPI\_Gatherv and MPI\_Scatterv函数使得它可以正确处理n不被进程数整除的情况。然后对程序编译、运行，简单测试是否达到了效果。
 \subsection{解题思路}
 本题主要任务是解决MPI\_Scatter和MPI\_Gather在数组长度无法被进程数整除时不能使用的问题，
 因此在本题中，我使用了MPI\_Scatterv和MPI\_Gatherv进行数组的分发和收集。\\
@@ -182,16 +177,25 @@ displacement指各进程接收到的数据在数组中的开始位置，datacoun
 %	SECTION 2
 %----------------------------------------------------------------------------------------
 
-\section{实验结果}
-\subsection{仿真截图}
+\section{Exercise 3.11}
+\subsection{解题思路}
+本题使用MPI\_Scan函数，对p个进程，每个进程有10个元素的数组求了前缀和。我的思路是，
+首先对每个进程求局部和，然后利用MPI\_Scan函数，
+使得每个进程i都有进程0至i这i+1个进程的元素总和，接着在每个进程里，通过用MPI\_Scan
+得到的总和，从后向前累计减去当前进程中的元素，即可所求的全局前缀和。
+最后将这些全局前缀和通过MPI\_Gather函数，汇总到0号进程统一输出。
 
+\subsection{测试}
+为了测试，我编写了串行求前缀和的程序，通过运行make check命令(里面用到了mpiexec命令)，
+对并行程序和串行程序进行对拍。通过本机测试得到，对拍1000组长度为40的前缀求和，没有发生错误。
 
+\subsection{运行方式}
+为了能够满足题目中"每个进程随机生成的10个数"以及与串行程序对拍的需求，我参考了ch3中mpi\_odd\_even.c中
+实现的命令行参数控制数据输入方式。\\\\
 
+具体来说，运行mpiexec -n <p> parallel -<g|i>, 其中p代表进程数，-g代表使用自动随机生成的数据，-i代表使用用户从命令行输入的10p个数据。通过-i的命令设置，
+我能够从文件中重定向输入，从而完成与串行程序的对拍。
 
-
-\qquad 在上图中，可以看到随着clock信号每次上升沿的出现，各个数列(十六进制自然数列，十进制自然数列、奇数列、偶数列)都发生一次变化。在reset信号从0变为1时，
-各信号回到了初始状态，reset信号从1变为0时，各信号继续随时钟变化而变化。其中后三个信号为编码后的数列，对应
-没有译码的数码管使用，在本次仿真中其数值没有具体含义。\footnote{为什么图中第一次遇到上升沿时，波形没有变化？详见3.1中的说明。}
 
 
 \subsubsection{DigitalLife\_Online仿真结果}

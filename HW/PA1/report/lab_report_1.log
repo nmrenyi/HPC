@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.999991 (TeX Live 2019/W32TeX) (preloaded format=xelatex 2019.6.30)  21 MAR 2020 19:30
+This is XeTeX, Version 3.14159265-2.6-0.999991 (TeX Live 2019/W32TeX) (preloaded format=xelatex 2019.6.30)  22 MAR 2020 11:56
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -696,29 +696,38 @@ Overfull \hbox (9.06143pt too wide) in paragraph at lines 86--95
 [1
 
 ]
-Underfull \hbox (badness 10000) in paragraph at lines 127--128
+Underfull \hbox (badness 10000) in paragraph at lines 127--129
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 132--134
+Underfull \hbox (badness 10000) in paragraph at lines 131--134
 
  []
 
-
-Underfull \hbox (badness 10000) in paragraph at lines 136--139
-
- []
-
-[2]
 File: checkResult.png Graphic file (type bmp)
 <checkResult.png>
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
 File: checkResult1.png Graphic file (type bmp)
 <checkResult1.png>
- [3]
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+[2] [3]
+Underfull \hbox (badness 10000) in paragraph at lines 193--195
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 193--195
+
+ []
+
 File: DL_Online_testbench.png Graphic file (type bmp)
 <DL_Online_testbench.png>
- [4] (d:/Programs/texlive/2019/texmf-dist/tex/latex/listings/lstlang1.sty
+[4] (d:/Programs/texlive/2019/texmf-dist/tex/latex/listings/lstlang1.sty
 File: lstlang1.sty 2019/02/27 1.8b listings language file
 ) [5]
 File: fallingEdgeUpdate.jpg Graphic file (type bmp)
@@ -747,12 +756,12 @@ Package fontspec Info: Font family 'FangSong(0)' created for font 'FangSong'
 (fontspec)             - 'small caps'  (m/sc) with NFSS spec.: 
 
  [6]
-Overfull \hbox (3.58987pt too wide) in paragraph at lines 296--297
+Overfull \hbox (3.58987pt too wide) in paragraph at lines 300--301
 [][][][][] [] [] [] [][][][][][][][][] [] [][][][][][][][][][][] [] [][] [] [][] [] [][][][][][] [] [][][][] [] [][][][][][][][][] [] [][][][][]$ 
  []
 
 
-Overfull \hbox (145.41919pt too wide) in paragraph at lines 302--303
+Overfull \hbox (145.41919pt too wide) in paragraph at lines 306--307
 [][][][][] [] [] [] [][][][][][][][][][][][][] [] [][][] [] [][][][][][][][][] [] [][][][][][][] [] [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]$ 
  []
 
@@ -764,10 +773,10 @@ LaTeX Font Warning: Size substitutions with differences
 
  ) 
 Here is how much of TeX's memory you used:
- 21855 strings out of 492909
- 492720 string characters out of 6132501
- 764163 words of memory out of 5000000
- 25676 multiletter control sequences out of 15000+600000
+ 21844 strings out of 492909
+ 491985 string characters out of 6132501
+ 763699 words of memory out of 5000000
+ 25665 multiletter control sequences out of 15000+600000
  538967 words of font info for 94 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
  54i,8n,68p,702b,1617s stack positions out of 5000i,500n,10000p,200000b,80000s
