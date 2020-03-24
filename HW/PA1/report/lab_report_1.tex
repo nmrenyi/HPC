@@ -196,6 +196,13 @@ displacement指各进程接收到的数据在数组中的开始位置，datacoun
 具体来说，运行mpiexec -n <p> parallel -<g|i>, 其中p代表进程数，-g代表使用自动随机生成的数据，-i代表使用用户从命令行输入的10p个数据。通过-i的命令设置，
 我能够从文件中重定向输入，从而完成与串行程序的对拍。
 
+\section{Programming Assignments 3.1}
+\subsection{解题思路}
+本题需要补充Find\_bins和Which\_bins函数。在Find\_bins函数中，通过调用Which\_bins函数统计当前进程所负责的元素在
+哪个bin中，得到局部的bin计数之后，使用MPI\_Reduce函数将结果快速求和到0号进程。\\\\
+在Which\_bins函数中，由于每个bin的宽度都已知，是$bin\_maxes[0] - min\_meas$, 因此$data$所在的bin编号即为$(int)((data - min\_meas) / (bin\_maxes[0] - min\_meas))$
+\subsection{测试}
+集群测试结果！！！
 
 
 \subsubsection{DigitalLife\_Online仿真结果}
