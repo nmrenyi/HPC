@@ -20,6 +20,7 @@
  * 2.  Except for debug output, process 0 does all I/O
  * 3.  Optional -DDEBUG compile flag for verbose output
  */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
