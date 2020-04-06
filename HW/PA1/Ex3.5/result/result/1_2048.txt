@@ -1,0 +1,17 @@
+Enter the order of the matrix
+Calculating parallel...
+parallel calculation complete, time cost = 0.018499 s
+Calculating serial...
+serial calculation complete, time cost = 0.017248 s
+
+
+==================Calculation Complete================
+========================REPORT========================
+Ex3.5
+Process number = 1, matrix order = 2048
+L2 norm = 0.000000
+Parallel calc time = 0.018499 s, Serial calc time = 0.017248 s, SpeedUp Ratio = 0.932380
+Parallel distribution time = 0.015560 s, parallel all time = 0.034059, overall SpeedUp Ratio = 0.506415
+allocation time = 0.000030
+======================REPORT END====================
+

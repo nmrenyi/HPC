@@ -1,0 +1,11 @@
+Please enter a value:  2 is not in the list
+Please enter a value:  Please enter a value:  6 is not in the list
+Please enter a value:  Please enter a value:  9 is not in the list
+Please enter a value:  12 is not in the list
+Please enter a value:  6 is not in the list
+Please enter a value:  12 is not in the list
+Please enter a value:  1 is in the list
+Please enter a value:  Please enter a value:  Please enter a value:  1 is in the list
+Please enter a value:  9 is not in the list
+Please enter a value:  6 is in the list
+list = 0 1 2 6 

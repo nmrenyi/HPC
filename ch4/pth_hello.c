@@ -39,12 +39,18 @@ int main(int argc, char* argv[]) {
 
    thread_handles = malloc (thread_count*sizeof(pthread_t)); 
 
+   // start threads work here
    for (thread = 0; thread < thread_count; thread++)  
       pthread_create(&thread_handles[thread], NULL,
           Hello, (void*) thread);  
 
+   // for (thread = 0; thread < thread_count; thread++)  
+   //    pthread_create(&thread_handles[thread], NULL,
+   //        Hello, &thread);  
+
    printf("Hello from the main thread\n");
 
+   // end threads work here
    for (thread = 0; thread < thread_count; thread++) 
       pthread_join(thread_handles[thread], NULL); 
 

@@ -1,6 +1,6 @@
 CC = mpicc
 STDCC = gcc
-EXEC = mpiexec
+EXEC = srun
 OPT = -g -Wall
 PARRALLEL_SRC = prefix_sum.c
 PARRALLEL_TARGET = parallel

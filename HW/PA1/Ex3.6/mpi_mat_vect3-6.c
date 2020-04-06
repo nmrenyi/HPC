@@ -124,6 +124,7 @@ int main(void) {
       printf("\n\n");
       printf("==================Calculation Complete================\n");
       printf("========================REPORT========================\n");
+      printf("Ex3.6\n");
       printf("Process number = %d, matrix order = %d\n", comm_sz, n);
       printf("L2 norm = %f\n", calcDifference(parallel_result, serial_result, n));
       printf("Parallel calc time = %f s, Serial calc time = %f s, SpeedUp Ratio = %f\n", parallel_calc_time, serial_calc_time, serial_calc_time / parallel_calc_time);
@@ -234,7 +235,7 @@ void Get_dims(
    if (my_rank == 0) {
       int i = 0;
       for (i = 0; i < comm_sz; i++) {
-         matrix_displacement[i] = (i / sqrt_sz) * ((*local_m_p) * 2) + (i % sqrt_sz);
+         matrix_displacement[i] = (i / sqrt_sz) * ((*local_m_p) * sqrt_sz) + (i % sqrt_sz);
          // matrix_displacement[i] = (i / sqrt_sz) * (*local_m_p * *n_p) + (i % sqrt_sz) * (*local_n_p);
          matrix_data_count[i] = 1;
       }
@@ -291,7 +292,7 @@ void Allocate_arrays(
 void Build_derived_type(int m, int local_m, int n, int local_n,
       MPI_Datatype* block_col_mpi_t_p) {
    MPI_Datatype vect_mpi_t;
-
+   
    /* m blocks each containing local_n elements */
    /* The start of each block is n doubles beyond the preceding block */
 
@@ -332,14 +333,38 @@ void Read_matrix(
       for (i = 0; i < m; i++)
          for (j = 0; j < n; j++)
             A[i * n + j] = -1 + rand() * 1.0 / RAND_MAX * 2;
+
+      // printf("matrix:\n");
+      // for (i = 0; i < m; i++) {
+      //    for (j = 0; j < n; j++) {
+      //       printf("%.2f ", A[i * n + j]);
+      //    }
+      //    printf("\n");
+      // }
    }
    else {
       Check_for_error(local_ok, "Read_matrix", "Can't allocate temporary matrix", comm);
    }
-
+   // if (my_rank == 0) {
+   //    for (i = 0; i < comm_sz; i++)
+   //    printf("displacement[%d] = %d \n", i, displacement[i]);
+   // }
+   // printf("\n");
    double local_start = MPI_Wtime();
    MPI_Scatterv(A, data_count, displacement, block_col_mpi_t, local_A, local_n * local_n, MPI_DOUBLE, 0, comm);
    *distribution_time += MPI_Wtime() - local_start;
+   // int k = 0;
+   // for (k = 0; k < comm_sz; k++)
+   // {MPI_Barrier(comm);
+   //    if (my_rank == k) {
+   //    printf("local rank = %d\n", my_rank);
+   //    for (i = 0; i < local_n; i++) {
+   //       for (j = 0; j < local_n; j++) {
+   //          printf("%.2f ", local_A[i * local_n + j]);
+   //       }
+   //       printf("\n");
+   //    }
+   // }}
 }  /* Read_matrix */
 
 

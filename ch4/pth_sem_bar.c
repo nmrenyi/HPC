@@ -53,7 +53,7 @@ int main(int argc, char* argv[]) {
    for (i = 0; i < BARRIER_COUNT; i++)
       sem_init(&barrier_sems[i], 0, 0);
    sem_init(&count_sem, 0, 1);
-
+   
    GET_TIME(start);
    for (thread = 0; thread < thread_count; thread++)
       pthread_create(&thread_handles[thread], (pthread_attr_t*) NULL,

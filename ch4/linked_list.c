@@ -40,7 +40,7 @@ int main(void) {
    char command;
    int  value;
    struct list_node_s* head_p = NULL;  /* start with empty list */
-
+   
    command = Get_command();
    while (command != 'q' && command != 'Q') {
       switch (command) {

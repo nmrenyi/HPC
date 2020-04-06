@@ -29,6 +29,7 @@
 \usepackage{ctex}
 \usepackage{listings}
 \usepackage{xcolor}
+\usepackage{multirow}
 \usepackage{url}
 \setlength\parindent{0pt} % Removes all indentation from paragraphs
 
@@ -61,27 +62,7 @@
 
 \maketitle % Insert the title, author and date
 
-% \begin{center}
-% \begin{tabular}{l r}
-% Date Performed: & January 1, 2012 \\ % Date the experiment was performed
-% Partners: & James Smith \\ % Partner names
-% & Mary Smith \\
-% Instructor: & Professor Smith % Instructor/supervisor
-% \end{tabular}
-% \end{center}
 
-% \begin{center}
-%     \begin{tabular}{|l | r|}
-%     \hline
-
-%         \multicolumn{2}{|c|}{实验环境} \\ \hline
-%         操作系统: & Windows10家庭版 18362.72 \\ \hline% Date the experiment was performed
-%         QuartusII版本: & Quartus II 13.0 sp1 \\ \hline% Partner names
-
-%         ModelSim版本: & Modelsim SE-64 10.7 \\ \hline% Instructor/supervisor
-
-%     \end{tabular}
-% \end{center}
 \begin{center}
     \begin{tabular}{l  r}
     \hline
@@ -93,28 +74,7 @@
 
     \end{tabular}
 \end{center}
-% % If you wish to include an abstract, uncomment the lines below
-% \begin{abstract}
-% Abstract text
-% \end{abstract}
 
-% \section*{实验环境}
-% 操作系统: Windows10家庭版 18362.720 \\
-% QuartusII版本: Quartus II 13.0 sp1 \\
-% ModelSim版本: Modelsim SE-64 10.7\\
-
-% 基本要求：P100 5.1.6，代码在 P129 附录C   点亮数字人生例程
-
-% 提高要求：P101 5.1.7，要求点亮三个数码管（至少要使用一个不带译码的数码管），这三个数码管
-
-%                  分别显示奇数列、偶数列和自然数列，通过CLK控制数列变化并且有RST复位功能
-
-% CPLD引脚：P126 附录B
-
-% 本次实验只做提高要求
-
-% 提交实验报告时间： 网络学堂中指定的时间窗口，过期酌情减分
-% 请同学们在第五周的周五前完成第一个实验，在网络学堂作业处，提交一个压缩文件，其中包括实验代码和仿真 testbench，和以仿真结果截图加上实验说明（具体内容可以参考实验指导书上“实验报告内容”）为主构成的实验报告，每位同学一个压缩文件提交网络学堂。
 
 \newpage
 
@@ -122,7 +82,7 @@
 %	SECTION 1
 %----------------------------------------------------------------------------------------
 
-\section{Ex3.1.13}
+\section{Ex3.13}
 \subsection{解题思路}
 本题主要任务是解决MPI\_Scatter和MPI\_Gather在数组长度无法被进程数整除时不能使用的问题，
 因此在本题中，我使用了MPI\_Scatterv和MPI\_Gatherv进行数组的分发和收集。\\
@@ -138,8 +98,8 @@ displacement指各进程接收到的数据在数组中的开始位置，datacoun
 但是涉及到其他无元素进程的内存分配问题还值得商榷，例如出现malloc(0)这样的情况，这种情况的可靠性还有待商榷，不过在本实验的测试中，这种方法并没有问题。
 
 \subsection{测试}
-本并行程序的测试通过与串行程序的对拍进行。在本机运行make check命令即可进行对拍(用到了mpiexec命令). 经过本地测试，对拍1000组数据没有产生错误。
-下面是部分对拍测试截图。
+本并行程序的测试通过与串行程序的对拍进行。在本地测试中，对拍1000组数据没有产生错误。
+下面是部分对拍测试截图。在集群上，只需在本题文件夹下输入make run命令即可运行本程序(makefile中设置了默认使用4进程)，输入make check命令即可进行对拍测试，更多测试功能详见本题makefile.
 
 \begin{figure}[h]
     \centering
@@ -154,24 +114,8 @@ displacement指各进程接收到的数据在数组中的开始位置，datacoun
 \end{figure}
 
 
-\newpage
+\clearpage
 
-% % If you have more than one objective, uncomment the below:
-% \begin{description}
-% \item[First Objective] \hfill \\
-% Objective 1 text
-% \item[Second Objective] \hfill \\
-% Objective 2 text
-% \end{description}
-
-% \subsection{Definitions}
-% \label{definitions}
-% \begin{description}
-% \item[Stoichiometry]
-% The relationship between the relative quantities of substances taking part in a reaction or forming a compound, typically a ratio of whole integers.
-% \item[Atomic mass]
-% The mass of an atom of a chemical element expressed in atomic mass units. It is approximately equivalent to the number of protons and neutrons in the atom (the mass number) or to the average number allowing for the relative abundances of different isotopes. 
-% \end{description} 
  
 %----------------------------------------------------------------------------------------
 %	SECTION 2
@@ -186,192 +130,471 @@ displacement指各进程接收到的数据在数组中的开始位置，datacoun
 最后将这些全局前缀和通过MPI\_Gather函数，汇总到0号进程统一输出。
 
 \subsection{测试}
-为了测试，我编写了串行求前缀和的程序，通过运行make check命令(里面用到了mpiexec命令)，
-对并行程序和串行程序进行对拍。通过本机测试得到，对拍1000组长度为40的前缀求和，没有发生错误。
+为了测试，我编写了串行求前缀和的程序，
+与并行程序进行对拍。通过本机测试得到，对拍1000组长度为40的前缀求和，没有发生错误。
 
 \subsection{运行方式}
 为了能够满足题目中"每个进程随机生成的10个数"以及与串行程序对拍的需求，我参考了ch3中mpi\_odd\_even.c中
 实现的命令行参数控制数据输入方式。\\\\
 
-具体来说，运行mpiexec -n <p> parallel -<g|i>, 其中p代表进程数，-g代表使用自动随机生成的数据，-i代表使用用户从命令行输入的10p个数据。通过-i的命令设置，
-我能够从文件中重定向输入，从而完成与串行程序的对拍。
-
-\section{Programming Assignments 3.1}
+具体来说，在集群上运行srun -n <p> parallel -<g|i>, 其中p代表进程数，-g代表使用自动随机生成的数据，-i代表使用用户从命令行输入的10p个数据。通过-i的命令设置，
+我能够从文件中重定向输入，从而完成与串行程序的对拍。在集群上，只需在本题文件夹下输入make run命令即可运行本程序(makefile中设置了默认使用4进程)，输入make check命令即可进行对拍测试，更多测试功能详见本题makefile.
+\clearpage
+\section{Ex 3.1}
 \subsection{解题思路}
 本题需要补充Find\_bins和Which\_bins函数。在Find\_bins函数中，通过调用Which\_bins函数统计当前进程所负责的元素在
 哪个bin中，得到局部的bin计数之后，使用MPI\_Reduce函数将结果快速求和到0号进程。\\\\
 在Which\_bins函数中，由于每个bin的宽度都已知，是$bin\_maxes[0] - min\_meas$, 因此$data$所在的bin编号即为$(int)((data - min\_meas) / (bin\_maxes[0] - min\_meas))$
 \subsection{测试}
-集群测试结果！！！
+本程序在本地与集群上测试均表现正常。在集群上，只需在本题文件夹下输入make run命令即可运行本程序(makefile中设置了默认使用4进程).
+\clearpage
+\section{Ex3.5}
+\subsection{解题思路}
+在本题中，我使用了附上的prog3.5\_mpi\_mat\_vect\_col.c程序完成。在这份代码中，已经基本实现了0号进程并行按列分块然后分发到不同进程的功能。
+其中关键的函数是Build\_derived\_type中的MPI\_Type\_vector和MPI\_Type\_create\_resized. 
+\\\\
+MPI\_Type\_vector接受5个参数，前三个较为关键，
+分别是Number of blocks, Number of elements in blocks, Number of elements between start of each block.
+ \footnote{此处参考\url{https://www.open-mpi.org/doc/current/man3/MPI_Type_vector.3.php}} 
+如果设矩阵是$m*n$阶，进程数是$comm\_sz$，那么这三个参数分别应该设为$m, n/comm\_sz, n$，这样就可以满足
+把待计算的矩阵根据进程数按列分块，每个进程得到$m * (n/comm\_sz)$阶的矩阵进行计算。最后再使用MPI\_Reduce得到最终结果。
+而MPI\_Type\_create\_resized共接收4个参数，本题中较为关键的是第2个参数和第3个参数，含义分别为New lower bound of data type, New extent of data type. 
+\footnote{此处参考\url{https://www.open-mpi.org/doc/current/man3/MPI_Type_create_resized.3.php}}
+这两个参数在本题中分别设置为$0, n/comm\_sz$. 这样可以理解为，把新生成的数据类型的宽度调整为$n/comm\_sz$，这样就可以在本题中方便地实现Scatter.
+\\\\
 
-
-\subsubsection{DigitalLife\_Online仿真结果}
+下图示意了本题如何按列分块。
+\footnote{此图来源\url{https://pdfs.semanticscholar.org/afa8/9673d416faf99cfd6b4353ab810e8418f5d7.pdf}}
 \begin{figure}[h]
     \centering
-    \includegraphics[width=\textwidth]{DL_Online_testbench.png}
-    \caption{testbench对DigitalLife\_Online文件夹下的文件进行的仿真结果波形图 (放大后清晰可见)}
+    \includegraphics[width=0.2\textwidth]{cw.png}
+    \caption{通过MPI\_Type\_vector和MPI\_Type\_create\_resized实现矩阵按列分块读取}
 \end{figure}
-
-\qquad 在上图中，可以看到随着clock信号每2次上升沿的出现(每2个时钟周期进行一次数列值的更新)，
-各个数列(奇数列、偶数列)都发生一次变化。在reset信号从0变为1时，
-各信号回到了初始状态，reset信号从1变为0时，各信号继续随时钟变化而变化。其中最后一个信号为编码后的自然数数列，对应
-没有译码的数码管使用，在本次仿真中其数值没有具体含义。\footnote{为什么图中第一次遇到2个上升沿时，波形没有变化？详见3.1中的说明。}
-
-
-\subsection{JieLabs测试结果}
-\qquad 见录屏文件JieLabsTest.mp4。在视频中展示了十六进制自然数数列、偶数列和奇数列。可看到大约每秒各数列都会发生变化。按下reset后可以看到各数列回到初始状态，不按reset时各信号随时钟变化而变化。
+\subsection{运行方式}
+在集群上，只需在本题文件夹下输入make run命令即可运行本程序(makefile中设置了默认使用4进程)，在运行make run后输入python check.py即可自动测试本报告中的数据，并且重定向到result文件夹下进行输出。
+\clearpage
+\subsection{测试结果}
+本题进行的所有测试，并行计算结果与串行计算结果均相同(差的二范数为0)，从而保证了并行程序的正确性。
+\subsubsection{并行计算时间和串行计算时间图表分析}
 
 
-% \section{Experimental Data}
+\begin{table}[h]
+    \caption{Ex3.5 并行计算时间(s)}
+    \label{tab:my-table}
+    \centering
+    \scalebox{0.8} {
+    \begin{tabular}{|c|c|c|c|c|c|c|c|}
+    \hline
+                                & \multicolumn{7}{c|}{Matrix Order}                                    \\ \hline
+    \multirow{7}{*}{Processors} &    & 1024     & 2048     & 4096     & 8192     & 16384    & 32768    \\ \cline{2-8} 
+                                & 1  & 0.006984 & 0.018833 & 0.051525 & 0.232303 & 0.82091  & 3.714691 \\ \cline{2-8} 
+                                & 2  & 0.003527 & 0.009607 & 0.025758 & 0.116467 & 0.410803 & 1.863362 \\ \cline{2-8} 
+                                & 4  & 0.001778 & 0.004934 & 0.014211 & 0.056639 & 0.233671 & 0.873432 \\ \cline{2-8} 
+                                & 8  & 0.000901 & 0.002473 & 0.007457 & 0.029537 & 0.117692 & 0.470057 \\ \cline{2-8} 
+                                & 16 & 0.00047  & 0.001307 & 0.003816 & 0.014908 & 0.059785 & 0.236177 \\ \cline{2-8} 
+                                & 32 & 0.000258 & 0.000531 & 0.002265 & 0.008542 & 0.033146 & 0.120416 \\ \hline
+    \end{tabular}}
+    \end{table}
 
-% \begin{tabular}{ll}
-% Mass of empty crucible & \SI{7.28}{\gram}\\
-% Mass of crucible and magnesium before heating & \SI{8.59}{\gram}\\
-% Mass of crucible and magnesium oxide after heating & \SI{9.46}{\gram}\\
-% Balance used & \#4\\
-% Magnesium from sample bottle & \#1
-% \end{tabular}
 
-%----------------------------------------------------------------------------------------
-%	SECTION 3
-%----------------------------------------------------------------------------------------
-\section{思考与总结}
-\subsection{遇到的问题与解决方法}
 
-\qquad 在我第一次仿真时，我遇到了奇怪的问题，即我在代码中设置为在clock信号上升沿时，更新数列和输出的值，但是得到的波形图却是在每次clk信号下降沿时
-发生变化，这令我十分不解。在参考了StackOverflow的解答并且与吕志远助教交流后，我学习到一个process中signal赋值的过程，只会在process结束时一起执行，被赋予的
-值是所有signal在process进行前的值，
-即所有信号在本轮process中，值仍为上一轮的值。
+% Please add the following required packages to your document preamble:
+% \usepackage{multirow}
+\begin{table}[h]
+    \caption{Ex3.5 串行计算时间(s)}
+    \label{tab:my-table}
+    \centering
+    \scalebox{0.8} {
+    \begin{tabular}{|c|c|c|c|c|c|c|c|}
+    \hline
+                                & \multicolumn{7}{c|}{Matrix Order}                                    \\ \hline
+    \multirow{7}{*}{Processors} &    & 1024     & 2048     & 4096     & 8192     & 16384    & 32768    \\ \cline{2-8} 
+                                & 1  & 0.006748 & 0.017442 & 0.051249 & 0.262236 & 0.819512 & 3.715776 \\ \cline{2-8} 
+                                & 2  & 0.006644 & 0.018268 & 0.051153 & 0.232251 & 0.821548 & 3.714187 \\ \cline{2-8} 
+                                & 4  & 0.006783 & 0.018551 & 0.056124 & 0.224963 & 0.931101 & 3.280052 \\ \cline{2-8} 
+                                & 8  & 0.006998 & 0.018533 & 0.051223 & 0.232268 & 0.929077 & 3.715156 \\ \cline{2-8} 
+                                & 16 & 0.006745 & 0.018167 & 0.058115 & 0.23203  & 0.901695 & 3.714686 \\ \cline{2-8} 
+                                & 32 & 0.007508 & 0.014606 & 0.05868  & 0.234549 & 0.936246 & 4.624938 \\ \hline
+    \end{tabular}}
+    \end{table}
 
-\qquad 因此，在刚才发现的下降沿信号发生变化的问题中，出现上升沿时，该程序会进行数列临时变量的更新和输出信号的更新，但在上升沿结束时
-输出信号仍然保持为上一轮的结果。在下降沿时，不会有数列临时变量的更新，有输出信号的更新，这时输出信号更新为了上升沿本意要更新的数值，
-因此出现了在下降沿时信号变化而上升沿中信号不便的问题。出现该问题的代码和波形图如下，注意第27行的代码和上面的注释。
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.85\textwidth]{35pto.png}
+        \caption{Ex3.5 并行计算时间-矩阵阶数 折线图}
+    \end{figure}
 
-\begin{lstlisting}[language={vhdl}]
-entity DigitalLife is
-port (
-    reset:in std_logic := '0';  
-    clock:in std_logic := '0';  
-    natural_out_hex: 
-        out std_logic_vector(3 downto 0) := "0000"
-);
-end entity DigitalLife;
-architecture bhv of DigitalLife is
-    signal natural_seq_hex :
-        std_logic_vector(3 downto 0) := "0000";
-begin
-    process (clock, reset) begin
-        if (reset = '1') then
-            natural_seq_hex <= "0000";
-            natural_out_hex <= "0000";
-        elsif (rising_edge(clock)) then
-            if (natural_seq_hex = 15) then
-                natural_seq_hex <= (others => '0'); 
-            else
-                natural_seq_hex <= natural_seq_hex +1;
-            end if;
-        end if;
-    -- When falling edge, this also be activated and
-    -- the value of the last rising edge
-    -- is updated at falling edge.
-    natural_out_hex <= natural_seq_hex;
-    end process;
-end architecture bhv;
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.85\textwidth]{35sto.png}
+        \caption{Ex3.5 串行计算时间-矩阵阶数 折线图}
+    \end{figure}
+    本部分中展示了不同进程数下，并行和串行计算时间随着矩阵阶数的变化表格和折线图。
+    从图4中可以清晰看出，并行计算时间与矩阵阶数成正相关。由于矩阵元素数量与矩阵阶数
+    成二次关系，图中的耗时与矩阵阶数也可以近似看作二次关系。同时可以看出，进程数越多，并行计算时间越少，这也充分体现了
+    并行计算在计算时的优越性。\\\\
 
-\end{lstlisting}
+    从图5中可以看出，串行计算时间与矩阵阶数近似为二次关系。不过矩阵阶数一定，不同的进程数下串行计算时间基本相同，这也基本符合串行计算
+    在本实验中只由0号进程计算的事实。同时从图中和表格中都可以看到，在矩阵阶数一定时，并行计算的时间要远低于串行计算，这再一次表明了并行程序在计算方面的优越性。
+
+
+\clearpage
+\subsubsection{并行分配时间与总时间图表分析}
+
+% Please add the following required packages to your document preamble:
+% \usepackage{multirow}
+\begin{table}[h]
+    \caption{Ex3.5 并行分配时间(s)}
+    \label{tab:my-table}
+    \centering
+    \scalebox{0.8} {
+    \begin{tabular}{|c|c|c|c|c|c|c|c|}
+    \hline
+                                & \multicolumn{7}{c|}{Matrix Order}                                    \\ \hline
+    \multirow{7}{*}{Processors} &    & 1024     & 2048     & 4096     & 8192     & 16384    & 32768    \\ \cline{2-8} 
+                                & 1  & 0.003748 & 0.011979 & 0.040306 & 0.165983 & 0.65822  & 2.654574 \\ \cline{2-8} 
+                                & 2  & 0.034063 & 0.106454 & 0.304867 & 1.104077 & 3.911728 & 16.8321  \\ \cline{2-8} 
+                                & 4  & 0.034214 & 0.108905 & 0.315048 & 1.101445 & 4.37147  & 15.888   \\ \cline{2-8} 
+                                & 8  & 0.03481  & 0.108111 & 0.29167  & 1.121542 & 4.309148 & 17.13832 \\ \cline{2-8} 
+                                & 16 & 0.036225 & 0.106354 & 0.276049 & 1.11216  & 4.273796 & 17.19085 \\ \cline{2-8} 
+                                & 32 & 0.115958 & 0.254139 & 6.009296 & 3.238718 & 95.0812  & 52.53218 \\ \hline
+    \end{tabular}}
+    \end{table}
+
+
+% Please add the following required packages to your document preamble:
+% \usepackage{multirow}
+\begin{table}[h]
+    \caption{Ex3.5 并行总时间(s)}
+    \label{tab:my-table}
+    \centering
+    \scalebox{0.8} {
+    \begin{tabular}{|c|c|c|c|c|c|c|c|}
+    \hline
+                                & \multicolumn{7}{c|}{Matrix Order}                                    \\ \hline
+    \multirow{7}{*}{Processors} &    & 1024     & 2048     & 4096     & 8192     & 16384    & 32768    \\ \cline{2-8} 
+                                & 1  & 0.010732 & 0.030812 & 0.091831 & 0.398286 & 1.47913  & 6.369265 \\ \cline{2-8} 
+                                & 2  & 0.03759  & 0.116061 & 0.330625 & 1.220544 & 4.322531 & 18.69546 \\ \cline{2-8} 
+                                & 4  & 0.035992 & 0.113839 & 0.329259 & 1.158084 & 4.605141 & 16.76143 \\ \cline{2-8} 
+                                & 8  & 0.035711 & 0.110584 & 0.299127 & 1.151079 & 4.42684  & 17.60837 \\ \cline{2-8} 
+                                & 16 & 0.036695 & 0.107661 & 0.279865 & 1.127068 & 4.333581 & 17.42703 \\ \cline{2-8} 
+                                & 32 & 0.116216 & 0.25467  & 6.011561 & 3.24726  & 95.11434 & 52.6526  \\ \hline
+    \end{tabular}}
+    \end{table}
+
+
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.85\textwidth]{35pdo.png}
+        \caption{Ex3.5 并行分配时间-矩阵阶数 折线图}
+    \end{figure}
+
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.85\textwidth]{35ptto.png}
+        \caption{Ex3.5 并行总时间-矩阵阶数 折线图}
+    \end{figure}
+    本部分展示了不同进程数下，并行分配时间和并行计算总时间与矩阵阶数的关系图表。
+    从图6中可以看出，并行分配时间与矩阵阶数成正相关关系，不考虑进程数为32的图线的情况下，
+    并行分配时间仍可近似认为与矩阵阶数成二次关系。\\\\
+
+    但是进程数为32时，当矩阵阶数是16384时，分配时间达到了95s，这个结果较为反常。
+    于是我对这组数据又进行了几次测试，包括对结果正确性的检验。在额外的这几次测试中，我得到的并行分配时间和并行计算时间均在13-14s左右，符合图线趋势，也和串行计算的结果完全相同。
+    于是我认为，图表中出现的这组异常数据，并非由于我的程序错误导致，而是OS状态等原因造成的偶然情况。
+
+\clearpage
+\subsubsection{并行计算时间加速比与并行总时间加速比}
+
+% Please add the following required packages to your document preamble:
+% \usepackage{multirow}
+\begin{table}[h]
+    \caption{Ex3.5 并行计算时间加速比}
+    \label{tab:my-table}
+    \centering
+    \scalebox{0.8} {
+    \begin{tabular}{|c|c|c|c|c|c|c|c|}
+    \hline
+                                & \multicolumn{7}{c|}{Matrix Order}                                    \\ \hline
+    \multirow{7}{*}{Processors} &    & 1024     & 2048     & 4096     & 8192     & 16384    & 32768    \\ \cline{2-8} 
+                                & 1  & 0.966208 & 0.92614  & 0.994643 & 1.128853 & 0.998297 & 1.000292 \\ \cline{2-8} 
+                                & 2  & 1.883754 & 1.90153  & 1.985907 & 1.994136 & 1.999859 & 1.993272 \\ \cline{2-8} 
+                                & 4  & 3.814961 & 3.75983  & 3.949335 & 3.971875 & 3.984666 & 3.75536  \\ \cline{2-8} 
+                                & 8  & 7.766926 & 7.494137 & 6.869116 & 7.863629 & 7.894139 & 7.903629 \\ \cline{2-8} 
+                                & 16 & 14.35106 & 13.89977 & 15.2293  & 15.56413 & 15.08229 & 15.7284  \\ \cline{2-8} 
+                                & 32 & 29.10078 & 27.50659 & 25.90728 & 27.45832 & 28.24612 & 38.408   \\ \hline
+    \end{tabular}}
+    \end{table}
+
+    % Please add the following required packages to your document preamble:
+% \usepackage{multirow}
+\begin{table}[h]
+    \caption{Ex3.5 并行总时间加速比}
+    \label{tab:my-table}
+    \centering
+    \scalebox{0.8} {
+    \begin{tabular}{|c|c|c|c|c|c|c|c|}
+    \hline
+                                & \multicolumn{7}{c|}{Matrix Order}                                    \\ \hline
+    \multirow{7}{*}{Processors} &    & 1024     & 2048     & 4096     & 8192     & 16384    & 32768    \\ \cline{2-8} 
+                                & 1  & 0.628774 & 0.566078 & 0.55808  & 0.658411 & 0.55405  & 0.583392 \\ \cline{2-8} 
+                                & 2  & 0.176749 & 0.1574   & 0.154716 & 0.190285 & 0.190062 & 0.198668 \\ \cline{2-8} 
+                                & 4  & 0.188459 & 0.162958 & 0.170455 & 0.194254 & 0.202187 & 0.19569  \\ \cline{2-8} 
+                                & 8  & 0.195962 & 0.167592 & 0.171242 & 0.201783 & 0.209874 & 0.210988 \\ \cline{2-8} 
+                                & 16 & 0.183813 & 0.168743 & 0.207654 & 0.20587  & 0.208072 & 0.213157 \\ \cline{2-8} 
+                                & 32 & 0.064604 & 0.057353 & 0.009761 & 0.07223  & 0.009843 & 0.087839 \\ \hline
+    \end{tabular}}
+    \end{table}
+
+
+    \begin{figure}[h]
+    \centering
+        \includegraphics[width=0.85\textwidth]{35pct.png}
+        \caption{Ex3.5 并行计算时间加速比}
+    \end{figure}
+    \begin{figure}[h]
+    \centering
+        \includegraphics[width=0.85\textwidth]{35pat.png}
+        \caption{Ex3.5 并行总时间加速比}
+    \end{figure}
+    本部分展示了并行计算时间加速比与并行总时间加速比的图表。
+    由图8可以看出，并行计算时间加速比基本稳定在进程数上下，这充分体现了并行程序在计算层面的优越性。
+    在这里我也思考了，为什么进程数一定时，加速比没有随着矩阵阶数明显增加。我认为这是由于进行试验时，
+    最小的矩阵阶数是1024，因此最小的矩阵元素个数也有$10^8$之多，这个数量已经非常大了，因此在某一进程数下，
+    计算时间加速比基本已经稳定在进程数上下。此外我们也可以注意到，当进程数达到32时，加速比随着矩阵阶数增加较为明显，这也能在一定程度上
+    印证上面的说法。\\\\
+
+
+    从图9中可以看出，考虑到分配时间、计算时间等时间的并行总时间加速比并不高，并且该加速比随着进程数的增加而降低，随着矩阵阶数的增加变化不明显。
+    这也提醒了我们，并行程序虽然计算速度非常快，但是数据分发效率不高。这可能是由于数据的分发、汇总等都是由1个进程即0号进程进行的，这导致了效率的低下。
+    一种可能的改进方法是，如果能够让多个进程同时读取到应得的数据，这样就可以大大缓解这个问题。
+
+\clearpage
+
+
+
+
+
+\section{Ex3.6}
+\subsection{解题思路}
+在本题中，我使用了附上的prog3.5\_mpi\_mat\_vect\_col.c程序完成。在这份代码中，已经基本实现了0号进程并行按列分块然后分发到不同进程的功能。
+我通过修改一些参数和发送方式，完成了本题对矩阵进行分块然后再计算的要求。
+我主要进行修改的地方是函数Build\_derived\_type中的MPI\_Type\_vector和MPI\_Type\_create\_resized，以及实现了通过编写不同的通信域实现最终结果的Reduce和Gather.\\\\
+
+MPI\_Type\_vector和MPI\_Type\_create\_resized的解释已经在Ex3.5的解题思路当中详细说明了，在此不再重复。本题中
+通过这两个函数的使用，成功实现了将矩阵进行分块并且发送，原理与Ex3.5相同，只不过参数进行了一些调整。与Ex3.5不同，本题
+使用了Scatterv的发送方法，这是因为必须要指定发送的起始位置，才可以保证分块矩阵没有重叠地发送到各个进程中。\\\\
+
+在编写本题时，另一个难点是如何将分块的计算结果，进行Reduce到某些核并最终Gather到0号核。在这个问题上，我参考了\url{https://mpitutorial.com/tutorials/introduction-to-groups-and-communicators/}
+这篇文章中提到的方法。在Reduce时，把每一行的分块矩阵编入一个通信域，使得每行的分块矩阵Reduce到最左边的分块矩阵。在Gather时，令每一行最左边的分块矩阵Gather到0号核，即可完成计算。\\\\
+
+下面的图10与图11示意了本题的简要流程。
+\footnote{图10\url{https://pdfs.semanticscholar.org/afa8/9673d416faf99cfd6b4353ab810e8418f5d7.pdf}}
+\footnote{图11\url{https://mpitutorial.com/tutorials/introduction-to-groups-and-communicators/}}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[]{fallingEdgeUpdate.jpg}
-    \caption{下降沿时数据变化而上升沿时数据不变}
+    \includegraphics[width=0.7\textwidth]{cb.png}
+    \caption{Ex3.6简要思路}
 \end{figure}
-\qquad 这个问题我通过将对输出信号的赋值加到了对于上升沿的判断分支中解决了，这样做不会在下降沿时触发赋值，只会在下一次上升沿时
-对输出变量为上一次上升沿时的值。不过这样做也有一定的小问题，即在第一次遇到上升沿时，输出信号并不会变化，只会在第二次上升沿及其之后
-发生规律的变化。这也解释了2.1.1和2.1.2中脚注提出的两个小疑问。
 
-\subsection{一些感想与建议}
-\qquad 非常感谢老师和助教在本次实验中给予我的帮助，无论是在群聊的答疑还是助教细心地与我私聊解决问题，都让我感受到了老师和助教的用心！
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\textwidth]{comm_split.png}
+    \caption{Ex3.6 Reduce时通讯子分组}
+\end{figure}
 
-\qquad 不过在VHDL入门、testbench入门时，我感觉还是遇到了很大的困难。可能一方面我在面对生疏知识时接受没有那么迅速，另一方面可能也是
-关于VHDL的网络资源不是特别丰富。有可能的话，建议老师和助教为新入门的同学准备更多的参考资料或者学习路线，以帮助同学们更好地掌握这门课的知识，享受数字逻辑实验的乐趣。
-
-
-
-\section{参考资料}
-1. RISING EDGE AND FALLING EDGE PROBLEM \\\url{https://stackoverflow.com/questions/50461404}
+\subsection{运行方式}
+在集群上，只需在本题文件夹下输入make run命令即可运行本程序(makefile中设置了默认使用4进程)，在运行make run后输入python check.py即可自动测试本报告中的数据，并且重定向到result文件夹下进行输出。
+\clearpage
 
 
-2. MODELSIM SIMULATION \\\url{https://blog.csdn.net/u013273161/article/details/82454134}
+\subsection{测试结果}
+本题进行的所有测试，并行计算结果与串行计算结果均相同(差的二范数为0)，从而保证了并行程序的正确性。
+
+\subsubsection{并行计算时间和串行计算时间图表分析}
+
+\begin{table}[h]
+    \caption{Ex3.6 并行计算时间 (s)}
+    \label{tab:my-table}
+    \centering
+    \scalebox{0.8} {
+    \begin{tabular}{|c|c|l|l|l|l|l|}
+    \hline
+    \multicolumn{1}{|l|}{}     & \multicolumn{6}{c|}{Matrix Order}                                                                                                                                  \\ \hline
+    \multirow{6}{*}{Processor} & \multicolumn{1}{l|}{} & \multicolumn{1}{c|}{1080} & \multicolumn{1}{c|}{2160} & \multicolumn{1}{c|}{4320} & \multicolumn{1}{c|}{7200} & \multicolumn{1}{c|}{14400} \\ \cline{2-7} 
+                               & 1                     & 0.0077                    & 0.021366                  & 0.057277                  & 0.158988                  & 0.634204                   \\ \cline{2-7} 
+                               & 4                     & 0.001955                  & 0.005366                  & 0.015299                  & 0.042381                  & 0.169856                   \\ \cline{2-7} 
+                               & 9                     & 0.000874                  & 0.002466                  & 0.007333                  & 0.020316                  & 0.081537                   \\ \cline{2-7} 
+                               & 16                    & 0.000479                  & 0.001363                  & 0.004174                  & 0.011507                  & 0.046374                   \\ \cline{2-7} 
+                               & 25                    & 0.000383                  & 0.000829                  & 0.002663                  & 0.007618                  & 0.029684                   \\ \hline
+    \end{tabular}}
+    \end{table}
 
 
-3. TESTBENCH TUTORIAL \\\url{https://vhdlguide.readthedocs.io/en/latest/vhdl/testbench.html#}
+    \begin{table}[h]
+        \caption{Ex3.6 串行计算时间(s)}
+        \label{tab:my-table}
+        \centering
+        \scalebox{0.8} {
+        \begin{tabular}{|c|l|l|l|l|l|l|}
+        \hline
+        \multicolumn{1}{|l|}{}      & \multicolumn{6}{c|}{Matrix Order}                                                                                                               \\ \hline
+        \multirow{6}{*}{Processors} &    & \multicolumn{1}{c|}{1080} & \multicolumn{1}{c|}{2160} & \multicolumn{1}{c|}{4320} & \multicolumn{1}{c|}{7200} & \multicolumn{1}{c|}{14400} \\ \cline{2-7} 
+                                    & 1  & 0.0077                    & 0.021366                  & 0.057277                  & 0.158988                  & 0.634204                   \\ \cline{2-7} 
+                                    & 4  & 0.001955                  & 0.005366                  & 0.015299                  & 0.042381                  & 0.169856                   \\ \cline{2-7} 
+                                    & 9  & 0.000874                  & 0.002466                  & 0.007333                  & 0.020316                  & 0.081537                   \\ \cline{2-7} 
+                                    & 16 & 0.000479                  & 0.001363                  & 0.004174                  & 0.011507                  & 0.046374                   \\ \cline{2-7} 
+                                    & 25 & 0.000383                  & 0.000829                  & 0.002663                  & 0.007618                  & 0.029684                   \\ \hline
+        \end{tabular}}
+        \end{table}
+
+        \begin{figure}[h]
+            \centering
+            \includegraphics[width=0.85\textwidth]{36pco.png}
+            \caption{Ex3.6 并行计算时间-矩阵阶数 折线图}
+        \end{figure}
+    
+        \begin{figure}[h]
+            \centering
+            \includegraphics[width=0.85\textwidth]{36sco.png}
+            \caption{Ex3.6 串行计算时间-矩阵阶数 折线图}
+        \end{figure}
+
+        本部分中展示了不同进程数下，并行和串行计算时间随着矩阵阶数的变化表格和折线图。
+        从图12中可以清晰看出，与Ex3.5类似，并行计算时间与矩阵阶数成正相关。由于矩阵元素数量与矩阵阶数
+        成二次关系，图中的耗时与矩阵阶数也可以近似看作二次关系。同时可以看出，进程数越多，并行计算时间越少，这也充分体现了
+        并行计算在计算时的优越性。\\\\
+    
+        从图13中可以看出，串行计算时间与矩阵阶数近似为二次关系。不过矩阵阶数一定，不同的进程数下串行计算时间基本相同，这也基本符合串行计算
+        在本实验中只由0号进程计算的事实。同时从图中和表格中都可以看到，在矩阵阶数一定时，并行计算的时间要远低于串行计算，这再一次表明了并行程序在计算方面的优越性。
+    
 
 
-4. TESTBENCH CREATION \\\url{https://www.doulos.com/knowhow/perl/testbench_creation/}
-
-
-5. HOW SIGNAL ASSIGNMENT WORK IN PROCESS \\\url{https://stackoverflow.com/questions/5060635/how-does-signal-assignment-work-in-a-process}
 
 
 
-% \section{Sample Calculation}
 
-% \begin{tabular}{ll}
-% Mass of magnesium metal & = \SI{8.59}{\gram} - \SI{7.28}{\gram}\\
-% & = \SI{1.31}{\gram}\\
-% Mass of magnesium oxide & = \SI{9.46}{\gram} - \SI{7.28}{\gram}\\
-% & = \SI{2.18}{\gram}\\
-% Mass of oxygen & = \SI{2.18}{\gram} - \SI{1.31}{\gram}\\
-% & = \SI{0.87}{\gram}
-% \end{tabular}
 
-% Because of this reaction, the required ratio is the atomic weight of magnesium: \SI{16.00}{\gram} of oxygen as experimental mass of Mg: experimental mass of oxygen or $\frac{x}{1.31}=\frac{16}{0.87}$ from which, $M_{\ce{Mg}} = 16.00 \times \frac{1.31}{0.87} = 24.1 = \SI{24}{\gram\per\mole}$ (to two significant figures).
+\clearpage
+\subsubsection{并行分配时间与总时间图表分析}
 
-% %----------------------------------------------------------------------------------------
-% %	SECTION 4
-% %----------------------------------------------------------------------------------------
 
-% \section{Results and Conclusions}
+    \begin{table}[h]
+        \caption{Ex3.6 并行分配时间(s)}
+        \label{tab:my-table}
+        \centering
+        \scalebox{0.8} {
+        \begin{tabular}{|c|c|c|c|c|c|c|}
+        \hline
+                                    & \multicolumn{6}{c|}{Matrix Order}            \\ \hline
+        \multirow{6}{*}{Processors} &    & 1080     & 2160     & 4320     & 7200     & 14400     \\ \cline{2-7} 
+                                    & 1  & 0.003992 & 0.01379  & 0.045249 & 0.127489 & 0.502016  \\ \cline{2-7} 
+                                    & 4  & 0.038476 & 0.113324 & 0.324967 & 0.796448 & 3.001446  \\ \cline{2-7} 
+                                    & 9  & 0.038288 & 0.116956 & 0.324326 & 0.814763 & 3.085259  \\ \cline{2-7} 
+                                    & 16 & 0.039415 & 0.119221 & 0.351533 & 0.869724 & 3.335967  \\ \cline{2-7} 
+                                    & 25 & 0.089289 & 0.278221 & 0.965618 & 2.596891 & 10.076753 \\ \hline
+        \end{tabular}}
+        \end{table}
 
-% The atomic weight of magnesium is concluded to be \SI{24}{\gram\per\mol}, as determined by the stoichiometry of its chemical combination with oxygen. This result is in agreement with the accepted value.
+\begin{table}[h]
+    \caption{Ex3.6 并行总时间(s)}
+    \label{tab:my-table}
+    \centering
+    \scalebox{0.8} {
+    \begin{tabular}{|c|c|c|c|c|c|c|}
+    \hline
+                               & \multicolumn{6}{c|}{Matrix Order}                          \\ \hline
+    \multirow{6}{*}{Processes} &    & 1080     & 2160     & 4320     & 7200     & 14400     \\ \cline{2-7} 
+                               & 1  & 0.011692 & 0.035156 & 0.102526 & 0.286477 & 1.13622   \\ \cline{2-7} 
+                               & 4  & 0.040431 & 0.11869  & 0.340266 & 0.838829 & 3.171302  \\ \cline{2-7} 
+                               & 9  & 0.039162 & 0.119422 & 0.331659 & 0.835079 & 3.166796  \\ \cline{2-7} 
+                               & 16 & 0.039894 & 0.120584 & 0.355707 & 0.881231 & 3.382341  \\ \cline{2-7} 
+                               & 25 & 0.089672 & 0.27905  & 0.968281 & 2.604509 & 10.106437 \\ \hline
+    \end{tabular}}
+    \end{table}
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.85\textwidth]{36pdo.png}
+        \caption{Ex3.6 并行分配时间-矩阵阶数 折线图}
+    \end{figure}
 
-% \begin{figure}[h]
-% \begin{center}
-% \includegraphics[width=0.65\textwidth]{placeholder} % Include the image placeholder.png
-% \caption{Figure caption.}
-% \end{center}
-% \end{figure}
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.85\textwidth]{36pao.png}
+        \caption{Ex3.6 并行总时间-矩阵阶数 折线图}
+    \end{figure}
 
-% %----------------------------------------------------------------------------------------
-% %	SECTION 5
-% %----------------------------------------------------------------------------------------
+    本部分展示了不同进程数下，并行分配时间和并行计算总时间与矩阵阶数的关系图表。
+    从图14中可以看出，并行分配时间与矩阵阶数成正相关关系，
+    并行分配时间可近似认为与矩阵阶数成二次关系。\\\\
 
-% \section{Discussion of Experimental Uncertainty}
+    由于并行的分配时间在一定程度上远大于并行的计算时间，因此对比图14图15可以看出，并行总时间的变化趋势与并行分配时间的变化区时基本一致。
 
-% The accepted value (periodic table) is \SI{24.3}{\gram\per\mole} \cite{Smith:2012qr}. The percentage discrepancy between the accepted value and the result obtained here is 1.3\%. Because only a single measurement was made, it is not possible to calculate an estimated standard deviation.
+    \clearpage
 
-% The most obvious source of experimental uncertainty is the limited precision of the balance. Other potential sources of experimental uncertainty are: the reaction might not be complete; if not enough time was allowed for total oxidation, less than complete oxidation of the magnesium might have, in part, reacted with nitrogen in the air (incorrect reaction); the magnesium oxide might have absorbed water from the air, and thus weigh ``too much." Because the result obtained is close to the accepted value it is possible that some of these experimental uncertainties have fortuitously cancelled one another.
+\subsubsection{并行计算时间加速比与并行总时间加速比}
 
-% %----------------------------------------------------------------------------------------
-% %	SECTION 6
-% %----------------------------------------------------------------------------------------
+        \begin{table}[h]
+            \caption{Ex3.6 并行计算时间加速比}
+            \label{tab:my-table}
+            \centering
+            \scalebox{0.8} {
+            \begin{tabular}{|c|c|c|c|c|c|c|}
+            \hline
+                                        & \multicolumn{6}{c|}{Matrix Order}                         \\ \hline
+            \multirow{6}{*}{Processors} &    & 1080     & 2160     & 4320     & 7200     & 14400    \\ \cline{2-7} 
+                                        & 1  & 0.947143 & 0.93382  & 1.000017 & 0.99844  & 0.999227 \\ \cline{2-7} 
+                                        & 4  & 3.742711 & 3.569884 & 3.737434 & 3.741512 & 3.732085 \\ \cline{2-7} 
+                                        & 9  & 8.354691 & 8.025953 & 7.798309 & 7.800354 & 7.760685 \\ \cline{2-7} 
+                                        & 16 & 15.14823 & 14.42406 & 15.02827 & 15.13261 & 15.03198 \\ \cline{2-7} 
+                                        & 25 & 10.62141 & 19.75513 & 24.39392 & 34.41139 & 24.59089 \\ \hline
+            \end{tabular}}
+            \end{table}
 
-% \section{Answers to Definitions}
+            \begin{table}[h]
+                \caption{Ex3.6 并行总时间加速比}
+                \label{tab:my-table}
+                \centering
+                \scalebox{0.8} {
+                \begin{tabular}{|c|c|c|c|c|c|c|}
+                \hline
+                                            & \multicolumn{6}{c|}{Matrix Order}                         \\ \hline
+                \multirow{6}{*}{Processors} &    & 1080     & 2160     & 4320     & 7200     & 14400    \\ \cline{2-7} 
+                                            & 1  & 0.62376  & 0.567528 & 0.558668 & 0.554111 & 0.557739 \\ \cline{2-7} 
+                                            & 4  & 0.180975 & 0.161395 & 0.168042 & 0.189036 & 0.199892 \\ \cline{2-7} 
+                                            & 9  & 0.186456 & 0.165732 & 0.172421 & 0.189769 & 0.199818 \\ \cline{2-7} 
+                                            & 16 & 0.181882 & 0.16304  & 0.176347 & 0.1976   & 0.206098 \\ \cline{2-7} 
+                                            & 25 & 0.045365 & 0.058688 & 0.067089 & 0.100651 & 0.072227 \\ \hline
+                \end{tabular}}
+                \end{table}
 
-% \begin{enumerate}
-% \begin{item}
-% The \emph{atomic weight of an element} is the relative weight of one of its atoms compared to C-12 with a weight of 12.0000000$\ldots$, hydrogen with a weight of 1.008, to oxygen with a weight of 16.00. Atomic weight is also the average weight of all the atoms of that element as they occur in nature.
-% \end{item}
-% \begin{item}
-% The \emph{units of atomic weight} are two-fold, with an identical numerical value. They are g/mole of atoms (or just g/mol) or amu/atom.
-% \end{item}
-% \begin{item}
-% \emph{Percentage discrepancy} between an accepted (literature) value and an experimental value is
-% \begin{equation*}
-% \frac{\mathrm{experimental\;result} - \mathrm{accepted\;result}}{\mathrm{accepted\;result}}
-% \end{equation*}
-% \end{item}
-% \end{enumerate}
+
+                \begin{figure}[h]
+                    \includegraphics[width=\textwidth]{36pct.png}
+                    \caption{Ex3.6 并行计算时间加速比}
+                \end{figure}
+                \begin{figure}[h]
+                    \includegraphics[width=\textwidth]{36pat.png}
+                    \caption{Ex3.6 并行总时间加速比}
+                \end{figure}
+
+        本部分展示了并行计算时间加速比与并行总时间加速比的图表。
+        由图16可以看出，并行计算时间加速比基本稳定在进程数上下，这充分体现了并行程序在计算层面的优越性。
+        此处进程数一定时，加速比没有随着矩阵阶数明显增加的原因与Ex3.5中类似，即实验中所采用的矩阵阶数都已经较大了\\\\
+        
+        图16中，进程数为25时，加速比似乎有些不太正常，体现为波动较大。因此我对于进程数为25时的实验进行了额外的测试，发现的确加速比会有很大的振荡，从10-30左右的加速比均有可能出现。
+        因此我认为，分块矩阵这种计算方法，可能由于计算的过程较为复杂，会产生一些波动，这也可能与OS的状态有关。\\\\
+    
+        从图17中可以看出，与Ex3.5类似，考虑到分配时间、计算时间等时间的并行总时间加速比并不高，并且该加速比随着进程数的增加而降低，随着矩阵阶数的增加变化不明显。
+        这里与Ex3.5中得到的结论基本相同: 并行程序由于分发较为缓慢，在数据量不足够大时，效率并不一定高。
+
+\clearpage
+\section{总结}
+在本次实验中，我锻炼了编写MPI并行程序的能力，也通过对运行结果的充分评估，加强了实验分析和思考的能力。
+同时，我也在本次实验中锻炼了使用服务器集群的能力。\\\\
+感谢老师和助教在本次实验中给予我们的悉心指导！
+
+
 
 %----------------------------------------------------------------------------------------
 %	BIBLIOGRAPHY

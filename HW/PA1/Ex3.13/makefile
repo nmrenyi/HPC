@@ -1,6 +1,6 @@
 CC = mpicc
 STDCC = gcc
-EXEC = mpiexec
+EXEC = srun
 OPT = -g -Wall
 PARRALLEL_SRC = mpi_vector_add_v.c
 PARRALLEL_TARGET = parallel
@@ -13,8 +13,9 @@ $(PARRALLEL_TARGET): $(PARRALLEL_SRC)
 $(SERIAL_TARGET): $(SERIAL_SRC)
 	$(STDCC) $(OPT) $(SERIAL_SRC) -o $(SERIAL_TARGET)
 
-run_parallel: $(PARRALLEL_TARGET)
+run:$(PARRALLEL_TARGET)
 	$(EXEC) -n 4 $(PARRALLEL_TARGET)
+
 run_serial: $(SERIAL_TARGET)
 	./$(SERIAL_TARGET)
 
