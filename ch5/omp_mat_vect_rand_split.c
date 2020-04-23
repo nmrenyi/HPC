@@ -175,7 +175,7 @@ void Gen_vector(double x[], int n) {
  */
 void Read_vector(char* prompt, double x[], int n) {
    int   i;
-
+   
    printf("%s\n", prompt);
    for (i = 0; i < n; i++) 
       scanf("%lf", &x[i]);

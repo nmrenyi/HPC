@@ -1,0 +1,114 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Lachaise Assignment
+% LaTeX Template
+% Version 1.0 (26/6/2018)
+%
+% This template originates from:
+% http://www.LaTeXTemplates.com
+%
+% Authors:
+% Marion Lachaise & FranÃ§ois FÃ©votte
+% Vel (vel@LaTeXTemplates.com)
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass[UTF8]{article}
+
+\input{structure.tex} % Include the file specifying the document structure and custom commands
+
+%----------------------------------------------------------------------------------------
+%	ASSIGNMENT INFORMATION
+%----------------------------------------------------------------------------------------
+
+\title{Introduction to HPC \\ HW5 Report} % Title of the assignment
+
+\author{姓名:任一  \\学号:2018011423\\ \texttt{ry18@mails.tsinghua.edu.cn}} % Author name and email address
+
+\date{\today} % University, school and/or department name(s) and a date
+
+%----------------------------------------------------------------------------------------
+\lstset{
+    % backgroundcolor=\color{red!50!green!50!blue!50},%代码块背景色为浅灰色
+    rulesepcolor= \color{gray}, %代码块边框颜色
+    breaklines=true,  %代码过长则换行
+    numbers=left, %行号在左侧显示
+    numberstyle= \small,%行号字体
+    keywordstyle= \color{blue},%关键字颜色
+    commentstyle=\color{gray}, %注释颜色
+    frame=shadowbox%用方框框住代码块
+}
+
+\begin{document}
+
+\maketitle % Print the title
+\begin{center}
+    \begin{tabular}{l  r}
+    \hline
+        \multicolumn{2}{c}{实验环境} \\ \hline
+        操作系统: & Windows10家庭版 18362.72 Windows Subsystem for Linux \\ \hline% Date the experiment was performed
+        gcc版本: & gcc version 7.5.0 \\ \hline% Partner names
+    \end{tabular}
+\end{center}
+\newpage
+
+\section{Exercise5.4}
+各规约操作符与其初始化的变量值如下表：
+\begin{table}[h]
+    \label{tab:my-table}
+    \centering
+    \caption{规约运算符与其对应的变量初始值表}
+    \begin{tabular}{|l|l|}
+    \hline
+    Operator           & Initial Value \\ \hline
+    \&\&               & $1$             \\ \hline
+    ||                 & $0$             \\ \hline
+    \&                 & $111...111_2$     \\ \hline
+    |                  & $0$             \\ \hline
+    \textasciicircum{} & $0$             \\ \hline
+    \end{tabular}
+    \end{table}
+
+\section{Exercise5.5}
+\subsection{1}
+串行相加时，当完成最后一次相加后，寄存器中的数值是$1.008e+03$, 
+当这个数字被存储到内存中时，该数值被四舍五入为3位十进制有效数字，
+即$sum = 1.01e+03$. 因此输出的值为1010.0.
+
+\subsection{2}
+使用2线程并行相加时,
+0号线程负责前两个数的相加，局部和为$4.00e+00$, 1号线程负责后两个数
+的相加，局部和为$1.00e+03$(此处发生了四舍五入). 
+这两个线程局部和相加，得到的结果为$1.00+03$(此处发生了四舍五入).
+因此输出的值为$1000.0$.
+
+\section{PA2}
+\subsection{}
+私有的变量有i, j, count. 共享的变量有a, n, temp.
+\subsection{}
+没有循环依赖。每个线程之间彼此都使用私有的i, j, count，
+对共享的temp数组的写操作也是彼此不重叠的，对a和n只存在读操作，
+因此不存在依赖和冲突。
+\subsection{}
+可以并行化memcpy的调用。但是不一定能提高效率，
+因为memcpy自身效率已经很高，开辟新线程还会带来额外的时间开销，因此不一定能够提高效率。
+
+\begin{figure}[h]
+    \label{Ratio}
+    \centering
+        \includegraphics[width=0.8\textwidth]{Ratio.png}
+        \caption{我的算法与课程提供的策略文件博弈胜率折线图}
+    \end{figure}
+
+
+\bibliographystyle{plain}
+\bibliography{ref} %这里的这个ref就是对文件ref.bib的引用
+
+\end{document}
