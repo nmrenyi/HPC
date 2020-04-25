@@ -1,0 +1,17 @@
+Enter the order of the matrix
+Calculating parallel...
+parallel calculation complete, time cost = 0.027760 s
+Calculating serial...
+serial calculation complete, time cost = 0.097319 s
+
+
+==================Calculation Complete================
+========================REPORT========================
+Ex3.6 with omp
+Process number = 4, matrix order = 4320, thread count = 20
+L2 norm = 0.000000, L2 norm calc time = 0.003784
+Parallel calc time = 0.027760 s, Serial calc time = 0.097319 s, SpeedUp Ratio = 3.505738
+Parallel distribution time = 0.335400 s, parallel all time = 0.363160, overall SpeedUp Ratio = 0.267979
+allocation time = 0.000033
+======================REPORT END====================
+

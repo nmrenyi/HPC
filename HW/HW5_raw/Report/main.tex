@@ -23,7 +23,7 @@
 \documentclass[UTF8]{article}
 
 \input{structure.tex} % Include the file specifying the document structure and custom commands
-
+\usepackage{multirow}
 %----------------------------------------------------------------------------------------
 %	ASSIGNMENT INFORMATION
 %----------------------------------------------------------------------------------------
@@ -55,6 +55,8 @@
         \multicolumn{2}{c}{实验环境} \\ \hline
         操作系统: & Windows10家庭版 18362.72 Windows Subsystem for Linux \\ \hline% Date the experiment was performed
         gcc版本: & gcc version 7.5.0 \\ \hline% Partner names
+        集群处理器：&Intel(R) Xeon(R)  E5-2680 v3\\ \hline
+        集群核心数：&24\\ \hline
     \end{tabular}
 \end{center}
 \newpage
@@ -88,8 +90,251 @@
 的相加，局部和为$1.00e+03$(此处发生了四舍五入). 
 这两个线程局部和相加，得到的结果为$1.00+03$(此处发生了四舍五入).
 因此输出的值为$1000.0$.
+\clearpage
+
+\section{PA1}
+本题中我主要使用了parallel for语句，使得每一个Process
+中都采用了OMP的并行方式。
+
+本题在集群上的目录为/home/2018011423/HW5/PA1，在该文件夹下输入make即可编译，make run即可运行。
+
+\subsection{并行串行结果之差二范数}
+在所有测试中，我的并行结果与串行结果之差的二范数都是0，这体现出了我的并行程序的正确性。
+\subsection{矩阵乘法与二范数计算时间分析}
+% Please add the following required packages to your document preamble:
+% \usepackage{multirow}
+\subsubsection{矩阵乘法计算时间}
+\begin{table}[h]
+    \caption{并行计算时间表}
+    \label{tab:my-table}
+    \centering
+    \begin{tabular}{|c|l|l|l|l|}
+    \hline
+    \multicolumn{5}{|c|}{parallel calc time}                                                                                \\ \hline
+    \multicolumn{1}{|l|}{}                                                 &            & \multicolumn{3}{c|}{MATRIX ORDER} \\ \hline
+    \multicolumn{1}{|l|}{}                                                 & Processors & 2160      & 4320      & 7200      \\ \hline
+    \multirow{3}{*}{\begin{tabular}[c]{@{}c@{}}10 \\ THREADS\end{tabular}} & 4          & 0.012486  & 0.017767  & 0.028428  \\ \cline{2-5} 
+                                                                           & 9          & 0.027715  & 0.027137  & 0.038875  \\ \cline{2-5} 
+                                                                           & 16         & 0.045799  & 0.04003   & 0.053367  \\ \hline
+    \multirow{3}{*}{\begin{tabular}[c]{@{}c@{}}20 \\ THREADS\end{tabular}} & 4          & 0.021975  & 0.02776   & 0.038028  \\ \cline{2-5} 
+                                                                           & 9          & 0.050516  & 0.050927  & 0.062229  \\ \cline{2-5} 
+                                                                           & 16         & 0.086376  & 0.082736  & 0.092697  \\ \hline
+    \end{tabular}
+    \end{table}
+    \begin{figure}[h]
+        \label{Ratio}
+        \centering
+            \includegraphics[width=0.8\textwidth]{pct.png}
+            \caption{并行计算时间与矩阵阶数折线图}
+        \end{figure}
+    \clearpage
+\subsubsection{二范数计算时间}
+
+        \begin{table}[h]
+            \caption{二范数计算时间表}
+            \label{tab:my-table}
+            \centering
+            \begin{tabular}{|l|l|l|l|}
+            \hline
+                       & \multicolumn{3}{c|}{L2 Norm Calc Time} \\ \hline
+                       & 2160        & 4320        & 7200       \\ \hline
+            SERIAL     & 0.000007    & 0.000013    & 0.000021   \\ \hline
+            10 THREADS & 0.000058    & 0.00006     & 0.00008    \\ \hline
+            20 THREADS & 0.000085    & 0.002227    & 0.006091   \\ \hline
+            \end{tabular}
+            \end{table}
+            \begin{figure}[h]
+                \label{Ratio}
+                \centering
+                    \includegraphics[width=0.8\textwidth]{lct.png}
+                    \caption{二范数计算时间折线图}
+                \end{figure}
+从图中可以明显看出，多线程对于二范数计算的加速并不明显。原因可能是二范数计算范围较小，
+线程的开辟和回收时间成本可能大于并行带来的时间收益。
+\clearpage
+\subsection{并行总时间、计算时间、通信时间、加速比、并行效率}
+\subsubsection{并行总时间}
+% Please add the following required packages to your document preamble:
+% \usepackage{multirow}
+% \usepackage[table,xcdraw]{xcolor}
+% If you use beamer only pass "xcolor=table" option, i.e. \documentclass[xcolor=table]{beamer}
+\begin{table}[h]
+    \caption{并行总时间表}
+    \label{tab:my-table}
+    \centering
+    \begin{tabular}{|c|l|l|l|l|}
+    \hline
+    \multicolumn{5}{|c|}{parallel all time}                                                                                                                                                    \\ \hline
+    \multicolumn{1}{|l|}{}                                                  &            & \multicolumn{3}{c|}{MATRIX ORDER}                                                                   \\ \hline
+    \multicolumn{1}{|l|}{}                                                  & Processors & 2160                            & 4320                            & 7200                            \\ \hline
+                                                                            & 4          & {\color[HTML]{000000} 0.125707} & {\color[HTML]{000000} 0.343842} & {\color[HTML]{000000} 0.822637} \\ \cline{2-5} 
+                                                                            & 9          & {\color[HTML]{000000} 0.134293} & {\color[HTML]{000000} 0.368953} & {\color[HTML]{000000} 0.905315} \\ \cline{2-5} 
+    \multirow{-3}{*}{\begin{tabular}[c]{@{}c@{}}10 \\ THREADS\end{tabular}} & 16         & {\color[HTML]{000000} 0.164941} & {\color[HTML]{000000} 0.39197}  & {\color[HTML]{000000} 0.942639} \\ \hline
+                                                                            & 4          & {\color[HTML]{000000} 0.135145} & {\color[HTML]{000000} 0.36316}  & {\color[HTML]{000000} 0.884623} \\ \cline{2-5} 
+                                                                            & 9          & {\color[HTML]{000000} 0.167472} & {\color[HTML]{000000} 0.386904} & {\color[HTML]{000000} 0.9313}   \\ \cline{2-5} 
+    \multirow{-3}{*}{\begin{tabular}[c]{@{}c@{}}20 \\ THREADS\end{tabular}} & 16         & {\color[HTML]{000000} 0.204671} & {\color[HTML]{000000} 0.432752} & {\color[HTML]{000000} 0.961524} \\ \hline
+    \end{tabular}
+    \end{table}
+    \begin{figure}[h]
+        \label{Ratio}
+        \centering
+            \includegraphics[width=0.8\textwidth]{pal.png}
+            \caption{并行总时间折线图}
+        \end{figure}
+\clearpage
+
+\subsubsection{并行计算时间}
+并行计算时间的图表已经在4.1中分析了，在此不再重复。
+\subsubsection{并行通信时间}
+% Please add the following required packages to your document preamble:
+% \usepackage{multirow}
+% \usepackage[table,xcdraw]{xcolor}
+% If you use beamer only pass "xcolor=table" option, i.e. \documentclass[xcolor=table]{beamer}
+\begin{table}[h]
+    \caption{并行通信时间表}
+    \label{tab:my-table}
+    \centering
+
+    \begin{tabular}{|c|l|l|l|l|}
+    \hline
+    \multicolumn{5}{|c|}{parallel distribution time}                                                                                                                                           \\ \hline
+    \multicolumn{1}{|l|}{}                                                  &            & \multicolumn{3}{c|}{MATRIX ORDER}                                                                   \\ \hline
+    \multicolumn{1}{|l|}{}                                                  & Processors & 2160                            & 4320                            & 7200                            \\ \hline
+                                                                            & 4          & {\color[HTML]{000000} 0.113221} & {\color[HTML]{000000} 0.326075} & {\color[HTML]{000000} 0.794209} \\ \cline{2-5} 
+                                                                            & 9          & {\color[HTML]{000000} 0.106578} & {\color[HTML]{000000} 0.341816} & {\color[HTML]{000000} 0.866440} \\ \cline{2-5} 
+    \multirow{-3}{*}{\begin{tabular}[c]{@{}c@{}}10 \\ THREADS\end{tabular}} & 16         & {\color[HTML]{000000} 0.119142} & {\color[HTML]{000000} 0.351940} & {\color[HTML]{000000} 0.889272} \\ \hline
+                                                                            & 4          & {\color[HTML]{000000} 0.11317}  & {\color[HTML]{000000} 0.3354}   & {\color[HTML]{000000} 0.846595} \\ \cline{2-5} 
+                                                                            & 9          & {\color[HTML]{000000} 0.116956} & {\color[HTML]{000000} 0.335977} & {\color[HTML]{000000} 0.869071} \\ \cline{2-5} 
+    \multirow{-3}{*}{\begin{tabular}[c]{@{}c@{}}20 \\ THREADS\end{tabular}} & 16         & {\color[HTML]{000000} 0.118295} & {\color[HTML]{000000} 0.350016} & {\color[HTML]{000000} 0.868827} \\ \hline
+    \end{tabular}
+    \end{table}
+
+    \begin{figure}[h]
+        \label{Ratio}
+        \centering
+            \includegraphics[width=0.8\textwidth]{pdt.png}
+            \caption{并行通信时间折线图}
+        \end{figure}
+\clearpage
+
+\subsubsection{并行计算时间加速比}
+% Please add the following required packages to your document preamble:
+% \usepackage{multirow}
+% \usepackage[table,xcdraw]{xcolor}
+% If you use beamer only pass "xcolor=table" option, i.e. \documentclass[xcolor=table]{beamer}
+\begin{table}[h]
+    \caption{并行加速比表}
+    \label{tab:my-table}
+    \centering
+
+    \begin{tabular}{|c|l|l|l|l|}
+    \hline
+    \multicolumn{5}{|c|}{parallel speed up ratio}                                                                                                                                              \\ \hline
+    \multicolumn{1}{|l|}{}                                                  &            & \multicolumn{3}{c|}{MATRIX ORDER}                                                                   \\ \hline
+    \multicolumn{1}{|l|}{}                                                  & Processors & 2160                            & 4320                            & 7200                            \\ \hline
+                                                                            & 4          & {\color[HTML]{000000} 2.607801} & {\color[HTML]{000000} 3.233748} & {\color[HTML]{000000} 5.584881} \\ \cline{2-5} 
+                                                                            & 9          & {\color[HTML]{000000} 1.051633} & {\color[HTML]{000000} 2.385046} & {\color[HTML]{000000} 4.616875} \\ \cline{2-5} 
+    \multirow{-3}{*}{\begin{tabular}[c]{@{}c@{}}10 \\ THREADS\end{tabular}} & 16         & {\color[HTML]{000000} 0.353610} & {\color[HTML]{000000} 1.619435} & {\color[HTML]{000000} 3.384039} \\ \hline
+                                                                            & 4          & {\color[HTML]{000000} 1.403868} & {\color[HTML]{000000} 3.505728} & {\color[HTML]{000000} 5.378852} \\ \cline{2-5} 
+                                                                            & 9          & {\color[HTML]{000000} 0.508611} & {\color[HTML]{000000} 1.694916} & {\color[HTML]{000000} 2.885632} \\ \cline{2-5} 
+    \multirow{-3}{*}{\begin{tabular}[c]{@{}c@{}}20 \\ THREADS\end{tabular}} & 16         & {\color[HTML]{000000} 0.188664} & {\color[HTML]{000000} 0.918923} & {\color[HTML]{000000} 2.113315} \\ \hline
+    \end{tabular}
+    \end{table}
+    \begin{figure}[h]
+        \label{Ratio}
+        \centering
+            \includegraphics[width=0.8\textwidth]{pcr.png}
+            \caption{并行通信时间折线图}
+        \end{figure}
+
+        \clearpage
+
+\subsubsection{并行计算时间效率}
+
+% Please add the following required packages to your document preamble:
+% \usepackage{multirow}
+% \usepackage[table,xcdraw]{xcolor}
+% If you use beamer only pass "xcolor=table" option, i.e. \documentclass[xcolor=table]{beamer}
+\begin{table}[h]
+    \caption{并行计算时间效率表}
+    \label{tab:my-table}
+    \centering
+
+    \begin{tabular}{|c|l|l|l|l|}
+    \hline
+    \multicolumn{5}{|c|}{efficiency}                                                                                                                                                           \\ \hline
+    \multicolumn{1}{|l|}{}                                                  &            & \multicolumn{3}{c|}{MATRIX ORDER}                                                                   \\ \hline
+    \multicolumn{1}{|l|}{}                                                  & Processors & 2160                            & 4320                            & 7200                            \\ \hline
+                                                                            & 4          & {\color[HTML]{000000} 0.065195} & {\color[HTML]{000000} 0.080844} & {\color[HTML]{000000} 0.139622} \\ \cline{2-5} 
+                                                                            & 9          & {\color[HTML]{000000} 0.011685} & {\color[HTML]{000000} 0.026501} & {\color[HTML]{000000} 0.051299} \\ \cline{2-5} 
+    \multirow{-3}{*}{\begin{tabular}[c]{@{}c@{}}10 \\ THREADS\end{tabular}} & 16         & {\color[HTML]{000000} 0.00221}  & {\color[HTML]{000000} 0.010121} & {\color[HTML]{000000} 0.02115}  \\ \hline
+                                                                            & 4          & {\color[HTML]{000000} 0.017548} & {\color[HTML]{000000} 0.043822} & {\color[HTML]{000000} 0.067236} \\ \cline{2-5} 
+                                                                            & 9          & {\color[HTML]{000000} 0.002826} & {\color[HTML]{000000} 0.009416} & {\color[HTML]{000000} 0.016031} \\ \cline{2-5} 
+    \multirow{-3}{*}{\begin{tabular}[c]{@{}c@{}}20 \\ THREADS\end{tabular}} & 16         & {\color[HTML]{000000} 0.00059}  & {\color[HTML]{000000} 0.002872} & {\color[HTML]{000000} 0.006604} \\ \hline
+    \end{tabular}
+    \end{table}
+    \begin{figure}[h]
+        \label{Ratio}
+        \centering
+            \includegraphics[width=0.8\textwidth]{eff.png}
+            \caption{并行效率折线图}
+        \end{figure}
+        \clearpage
+
+\subsection{两种算法对比}
+在矩阵阶数为7200，处理器数为9的情况下，我对比了此前实现的算法与加入OMP后的算法。
+其中Thread Count为1的数据即为此前算法，Thread Count不为1的是加入OMP后的算法。
+\begin{table}[h]
+    \caption{两种算法并行计算时间表}
+    \label{tab:my-table}
+    \centering
+
+    \begin{tabular}{|l|l|}
+    \hline
+    Thread Count & PARALLEL CALC TIME \\ \hline
+    1            & 0.020316           \\ \hline
+    10           & 0.038875           \\ \hline
+    20           & 0.062229           \\ \hline
+    \end{tabular}
+    \end{table}
+    \begin{figure}[h]
+        \label{Ratio}
+        \centering
+            \includegraphics[width=0.8\textwidth]{cmpc.png}
+            \caption{两种算法并行计算时间折线图}
+        \end{figure}
+
+        \begin{table}[h]
+            \caption{两种算法并行总时间表}
+            \centering
+
+            \label{tab:my-table}
+            \begin{tabular}{|l|l|}
+            \hline
+            Thread Count & PARALLEL ALL TIME \\ \hline
+            1            & 0.835079          \\ \hline
+            10           & 0.905315          \\ \hline
+            20           & 0.9313            \\ \hline
+            \end{tabular}
+            \end{table}
+
+
+                \begin{figure}[h]
+                    \label{Ratio}
+                    \centering
+                        \includegraphics[width=0.8\textwidth]{cmpa.png}
+                        \caption{两种算法并行总时间折线图}
+                    \end{figure}
+可能是由于测试的矩阵规模不够大，OMP在每个线程上并不能得到理想的加速结果，反而比
+不采用OMP的版本用时更多(无论是计算时间还是总时间). 因此这也提醒了我，在实验规模
+不大时，无须采用过多的并行技术。
+
+
+\clearpage
 
 \section{PA2}
+本题在集群上的目录为/home/2018011423/HW5/PA2，在该文件夹下输入make即可编译，make run即可运行。
+
 \subsection{}
 私有的变量有i, j, count. 共享的变量有a, n, temp.
 \subsection{}
@@ -100,12 +345,79 @@
 可以并行化memcpy的调用。但是不一定能提高效率，
 因为memcpy自身效率已经很高，开辟新线程还会带来额外的时间开销，因此不一定能够提高效率。
 
+\subsection{}
+程序的实现思路如下：我使用了题目中给出的计数排序的实现方式, 并利用parallel for语句对其加以
+改造使其并行化。
+\subsection{分析不同数据规模下，各排序算法的性能}
+在这一部分，我将对比不同数据规模下，串行计数排序、并行计数排序、快速排序的性能。
+此处的并行计数排序，我采用了10线程和默认调度方式。分析图表如下：
+\begin{table}[h]
+    \caption{各排序算法性能表}
+    \label{tab:my-table}
+    \centering
+    \resizebox{16cm}{!} {
+    \begin{tabular}{|l|l|l|l|l|l|l|l|}
+    \hline
+    array size                  & 100      & 500      & 1000     & 5000     & 10000    & 50000     & 100000    \\ \hline
+    Serial Count Sort Time(s)   & 0.000120 & 0.003107 & 0.013448 & 0.202669 & 0.604671 & 13.615840 & 53.869850 \\ \hline
+    Parallel Count Sort Time(s) & 0.000254 & 0.000705 & 0.002144 & 0.038180 & 0.116571 & 1.759016  & 6.806380  \\ \hline
+    QuickSort Time(s)           & 0.000020 & 0.000216 & 0.000296 & 0.000545 & 0.001082 & 0.010681  & 0.022842  \\ \hline
+    \end{tabular}}
+    \end{table}
+    \begin{figure}[h]
+        \label{Ratio}
+        \centering
+            \includegraphics[width=0.8\textwidth]{sa.png}
+            \caption{各排序算法耗时-数组长度折线图}
+        \end{figure}
+        \begin{table}[h]
+            \caption{并行计数排序相较串行计数排序加速比}
+            \label{tab:my-table}
+            \centering
+            \resizebox{16cm}{!}{
+            \begin{tabular}{|l|l|l|l|l|l|l|l|}
+            \hline
+            array size   & 100         & 500         & 1000       & 5000        & 10000       & 50000       & 100000      \\ \hline
+            SpeedUpRatio & 0.472440945 & 4.407092199 & 6.27238806 & 5.308250393 & 5.187147747 & 7.740600427 & 7.914610997 \\ \hline
+            \end{tabular}}
+            \end{table}
+
+            \begin{figure}[h]
+                \label{Ratio}
+                \centering
+                    \includegraphics[width=0.8\textwidth]{psr.png}
+                    \caption{并行计数排序加速比-数组长度折线图}
+                \end{figure}
+从图表中可以看出，相较串行计数排序，并行计数排序在数据规模较大时，表现出了较好的加速性能。
+但是由于题中所给的计数排序时间复杂度为$O(n^2)$, 而快速排序时间复杂度为$O(nlogn)$, 其中n
+为待排序的数组长度，因此两种计数排序的耗时都明显高于快速排序。
+
+\clearpage
+\subsection{不同调度策略下，程序运行效率}
+\begin{table}[h]
+    \caption{不同调度策略，程序耗时表}
+    \label{tab:my-table}
+    \resizebox{16cm}{!}{
+    \begin{tabular}{|l|l|l|l|l|l|l|l|l|l|l|l|l|l|l|l|}
+    \hline
+                 & \multicolumn{5}{c|}{static}           & \multicolumn{5}{c|}{Dynamic}          & \multicolumn{5}{c|}{Guided}           \\ \hline
+    Chunk Size   & 1     & 10    & 50    & 100   & 500   & 1     & 10    & 50    & 100   & 500   & 1     & 10    & 50    & 100   & 500   \\ \hline
+    Time Cost(s) & 0.118 & 0.115 & 0.117 & 0.117 & 0.117 & 0.109 & 0.108 & 0.110 & 0.114 & 0.118 & 0.108 & 0.108 & 0.110 & 0.111 & 0.122 \\ \hline
+    \end{tabular}}
+    \end{table}
+
+
 \begin{figure}[h]
     \label{Ratio}
     \centering
-        \includegraphics[width=0.8\textwidth]{Ratio.png}
-        \caption{我的算法与课程提供的策略文件博弈胜率折线图}
+        \includegraphics[width=0.8\textwidth]{st.png}
+        \caption{不同调度策略下，程序运行时间柱状图}
     \end{figure}
+理论上讲，在本题的场景中，分配到数组中的元素进行计数排序的时间成本应该不会有很大区别。
+因此使用Static调度会是一个好的选择，Dynamic调度可能会因为动态调度而比Static调度慢一些。
+
+但是从实际的实验结果来看，Dynamic调度耗时比Static调度略少，并且ChunkSize较小时运行速度更快。
+在Static调度方法中，ChunkSize对耗时影响不大。而在Guided调度中，耗时随着ChunkSize的增大而增加。
 
 
 \bibliographystyle{plain}
